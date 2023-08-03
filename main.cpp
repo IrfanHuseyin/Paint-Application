@@ -26,6 +26,32 @@ void update()
     }
 }
 
+void erase(sf::Vector2i mousePosition)
+{
+    iter = circles.begin();
+
+    while (iter != circles.end())
+    {
+        sf::Vector2f circlePosition = (*iter).getPosition();
+        sf::Vector2f circleSize = (*iter).getScale();
+        float radius = (*iter).getRadius();
+
+        float left = circlePosition.x - radius;
+        float right = circlePosition.x + radius;
+        float top = circlePosition.y - radius;
+        float bottom = circlePosition.y + radius;
+
+        if (mousePosition.x >= left && mousePosition.x <= right && mousePosition.y >= top && mousePosition.y <= bottom)
+        {
+            iter = circles.erase(iter);
+        }
+        else
+        {
+            iter++;
+        }
+    }
+}
+
 int main()
 {
     sf::View view(sf::FloatRect(0, 0, width, height));
@@ -68,11 +94,23 @@ int main()
             point.setPosition(x, y);
             point.setFillColor(sf::Color::Black);
             add(point);
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+            {
+                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                erase(mousePosition);
+            }
         }
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Middle))
         {
             circles.clear();
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Middle))
+            {
+                sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                erase(mousePosition);
+            }
         }
 
         window.clear();
